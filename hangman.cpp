@@ -4,12 +4,14 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <cstdlib>
+#include <ctime>
 
 class Hangman {
 public:
   Hangman();
   Hangman(std::string);
-  Hangman(ifstream& ifile);
+  Hangman(std::ifstream& ifile);
   ~Hangman();
   void play();
   static const std::string DEFAULTWORD;
@@ -43,15 +45,17 @@ Hangman::Hangman(std::string chosenWord){
   init(chosenWord);
 }
 
-Hangman::Hangman(ifstream& ifile) {
+Hangman::Hangman(std::ifstream& ifile) {
   if (ifile.fail()) {
-    std::cout << "Unable to open file!" << std::endl;
-    exit(-1);
-  }
-
-  std::string word = "";
-  while (ifile >> word) {
+    init(DEFAULTWORD);
+  } else {
+    std::srand(std::time(0));
+    std::string word = "";
+    while (ifile >> word) {
     _words.push_back(word);
+    }
+
+    init(_words[std::rand() % _words.size()]);
   }
 }
 
