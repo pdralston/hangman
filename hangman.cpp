@@ -190,6 +190,7 @@ void Hangman::play(){
     std::cout << "Congratulations on the win!\n";
   } else {
     printGallows();
+    std::cout << _words[std::rand() % _words.size()];
     std::cout << "Better luck next time.\n";
   }
 }
