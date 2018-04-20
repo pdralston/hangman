@@ -3,18 +3,22 @@
 
 #include <iostream>
 #include <fstream>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
 
 class Hangman {
 public:
   Hangman();
   Hangman(std::string);
-  //Hangman(ifstream& ifile);
+  Hangman(std::ifstream& ifile);
   ~Hangman();
   void play();
   static const std::string DEFAULTWORD;
   static const int WRONGALLOWED;
 private:
   std::string* gallows;
+  std::vector<std::string> _words;
   std::string guessWord, wordState, currGuess, graveYard;
   int numWrong, numRight, wordSize;
   bool gameWon;
@@ -33,7 +37,7 @@ private:
 const std::string Hangman::DEFAULTWORD = "testword";
 const int Hangman::WRONGALLOWED = 6;
 
-Hangman::Hangman(){
+Hangman::Hangman() {
   init(DEFAULTWORD);
 }
 
@@ -41,7 +45,19 @@ Hangman::Hangman(std::string chosenWord){
   init(chosenWord);
 }
 
-//Hangman::Hangman(ifstream& ifile){}
+Hangman::Hangman(std::ifstream& ifile) {
+  if (ifile.fail()) {
+    init(DEFAULTWORD);
+  } else {
+    std::srand(std::time(0));
+    std::string word = "";
+    while (ifile >> word) {
+    _words.push_back(word);
+    }
+
+    init(_words[std::rand() % _words.size()]);
+  }
+}
 
 Hangman::~Hangman(){
   delete[] gallows;
@@ -83,7 +99,7 @@ void Hangman::setGallows(){
     + body.substr(0, 5) + "\n"
     + feet.substr(0, 2) + "\n"
     + base;
-  gallows[4] = top + head + body 
+  gallows[4] = top + head + body
     + feet.substr(0, 2) + "\n"
     + base;
   gallows[5] = top + head + body
